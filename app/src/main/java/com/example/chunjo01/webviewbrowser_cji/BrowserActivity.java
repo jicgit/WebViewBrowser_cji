@@ -22,6 +22,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 /**
  * Created by chunjo01 on 2017-10-19.
@@ -32,6 +33,9 @@ public class BrowserActivity extends AppCompatActivity {
     private WebView webView;
     private ProgressBar progressBar;
     private String url;
+
+    boolean loadingFinished = true;
+    boolean redirect = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,9 +54,6 @@ public class BrowserActivity extends AppCompatActivity {
 
         webView = (WebView) findViewById(R.id.webView);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
-
-
 
         // set up web1
 //        WebSettings settings = webView.getSettings();
@@ -96,21 +97,52 @@ public class BrowserActivity extends AppCompatActivity {
 
         webView.setWebChromeClient(new MyWebChromeClient(this));
         webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                progressBar.setVisibility(View.VISIBLE);
-                invalidateOptionsMenu();
-            }
-
+            @SuppressWarnings("deprecation")
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (!loadingFinished) {
+                    redirect = true;
+                }
+
+                loadingFinished = false;
+                webView.loadUrl(url);
+                return true;
+            }
+
+            @TargetApi(Build.VERSION_CODES.N)
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                if (!loadingFinished) {
+                    redirect = true;
+                }
+
+                loadingFinished = false;
+                String url=request.getUrl().toString();
                 webView.loadUrl(url);
                 return true;
             }
 
             @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                loadingFinished = false;
+                super.onPageStarted(view, url, favicon);
+                progressBar.setVisibility(View.VISIBLE);
+                invalidateOptionsMenu();
+            }
+
+
+
+            @Override
             public void onPageFinished(WebView view, String url) {
+                if(!redirect){
+                    loadingFinished = true;
+                }
+
+                if(loadingFinished && !redirect){
+                    Toast.makeText(BrowserActivity.this,url,Toast.LENGTH_LONG).show();
+                } else{
+                    redirect = false;
+                }
                 super.onPageFinished(view, url);
                 progressBar.setVisibility(View.GONE);
                 invalidateOptionsMenu();
