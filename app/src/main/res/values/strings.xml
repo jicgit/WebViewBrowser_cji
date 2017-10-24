@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">WebViewBrowser_demo</string>
+    <string name="action_fav">Add as Favorite</string>
+    <string name="action_back">Back</string>
+    <string name="action_forward">Forward</string>
+    <string name="action_home">Home</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="home_url">http://m.naver.com</string>
+</resources>
