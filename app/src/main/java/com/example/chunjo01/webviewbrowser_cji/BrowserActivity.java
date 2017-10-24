@@ -22,9 +22,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import java.lang.reflect.Method;
 
 /**
  * Created by chunjo01 on 2017-10-19.
